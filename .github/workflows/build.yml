@@ -1,0 +1,25 @@
+name: Собрать exe
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Установить библиотеки
+        run: |
+          python -m pip install --upgrade pip
+          pip install openpyxl pyinstaller
+      - name: Собрать exe
+        run: >
+          pyinstaller --noconfirm --onefile --windowed
+          --name "Raschet_vyplat" --hidden-import openpyxl gui.py
+      - name: Выгрузить exe
+        uses: actions/upload-artifact@v4
+        with:
+          name: Raschet_vyplat_exe
+          path: dist/Raschet_vyplat.exe
